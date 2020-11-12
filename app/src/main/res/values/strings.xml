@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Карат Дата Mobile</string>
+    <string name="to_chat">К чату с сервером</string>
 </resources>
