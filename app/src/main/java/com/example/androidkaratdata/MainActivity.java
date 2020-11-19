@@ -9,7 +9,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    EditText editText;
+    EditText editText_name;
     TextView textView_device;
     Spinner spinnerDevice;
     CalendarView calendarView;
@@ -37,15 +39,15 @@ public class MainActivity extends AppCompatActivity {
         textView_device = findViewById(R.id.tView_device);
         textView_device.setText(R.string.tView_device);
 
-//проверить
-        textView = findViewById(R.id.textView);
-
+        //проверить
+        textView = findViewById(R.id.textView_date);
 
         setSupportActionBar(toolbar);
-        //обработка editText
-        editText = findViewById(R.id.editText);
 
-        //spinner
+        //editText
+        editText_name = findViewById(R.id.editText_name);
+
+        //spinner activity_main
         spinnerDevice = findViewById(R.id.spinner_device);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, device);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -66,5 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText("Начать с " + selectedDate);
             }
         });
+
     }
 }
