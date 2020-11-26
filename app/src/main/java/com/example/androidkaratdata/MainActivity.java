@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinnerDevice;
     CalendarView calendarView;
     TextView textView;
+    ImageButton imageButtonSetting;
 
     String[] device = {"2-213/223", "306/7/8"};
 
@@ -69,5 +72,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //обработчик кнопки "настройки"
+        imageButtonSetting = findViewById(R.id.imageButton_setting);
+
+        imageButtonSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
     }
-}
+    }
