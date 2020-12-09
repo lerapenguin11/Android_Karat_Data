@@ -1,4 +1,4 @@
-﻿package com.example.androidkaratdata;
+package com.example.androidkaratdata;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
