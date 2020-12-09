@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //toolbar
         toolbar = findViewById(R.id.myToolBar);
 
@@ -83,4 +85,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    }
+}
