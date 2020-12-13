@@ -1,24 +1,30 @@
 package com.example.androidkaratdata;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.CalendarView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Calendar;
+import com.example.androidkaratdata.queryclass.DeviceQuery;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,16 +33,37 @@ public class MainActivity extends AppCompatActivity {
     EditText editText_name;
     TextView textView_device;
     Spinner spinnerDevice;
-    CalendarView calendarView;
+    DatePicker datePicker;
     TextView textView;
     ImageButton imageButtonSetting;
+    Button buttonRead;
+    DeviceQuery query;
 
     String[] device = {"2-213/223", "306/7/8"};
 
+    String port, ip, adr;
+    int cYear, cMonth, cDay;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+
+        //забираем данные из настроек
+        port = intent.getStringExtra("port");
+        ip = intent.getStringExtra("ip");
+        adr = intent.getStringExtra("adr");
+
+        if (port != null && ip != null && adr != null)
+            Toast.makeText(getApplicationContext(),
+                ("Main - Address: "+ip+":"+port+"/"
+                        +adr+"\n"), Toast.LENGTH_LONG).show();
+        else Toast.makeText(getApplicationContext(),
+                "Адрес прибора неизвестен", Toast.LENGTH_LONG).show();
 
         //toolbar
         toolbar = findViewById(R.id.myToolBar);
@@ -58,14 +85,13 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDevice.setAdapter(adapter);
 
-        calendarView = findViewById(R.id.calendarView);
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        datePicker = findViewById(R.id.datePicker);
+        datePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year,
-                                            int month, int dayOfMonth) {
-                int cYear = year;
-                int cMonth = month;
-                int cDay = dayOfMonth;
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                cYear = year;
+                cMonth = monthOfYear;
+                cDay = dayOfMonth;
                 String selectedDate = new StringBuilder().append(cMonth + 1)
                         .append("-").append(cDay).append("-").append(cYear)
                         .append(" ").toString();
@@ -84,5 +110,82 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        buttonRead = findViewById(R.id.button_read);
+
+        buttonRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Date start = new Date(cYear, cMonth, cDay);
+                query = new DeviceQuery(
+                        port, ip, adr, start,
+                        getArchivesTypes(), editText_name.getText().toString()
+                );
+                /*Toast.makeText(getApplicationContext(),
+                        query.toString(), Toast.LENGTH_LONG).show();*/
+                showDialog(1);
+                /*Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);*/
+            }
+        });
     }
+
+    private ArrayList<String> getArchivesTypes() {
+        ArrayList<String> res = new ArrayList<>();
+        CheckBox h = findViewById(R.id.checkBox3);
+        CheckBox d = findViewById(R.id.checkBox2);
+        CheckBox m = findViewById(R.id.checkBox4);
+        CheckBox emer = findViewById(R.id.checkBox6);
+        CheckBox integ = findViewById(R.id.checkBox5);
+        CheckBox prot = findViewById(R.id.checkBox8);
+        CheckBox event = findViewById(R.id.checkBox7);
+        if (h.isChecked())
+            res.add(getString(R.string.hourly));
+        if (d.isChecked())
+            res.add(getString(R.string.daily));
+        if (m.isChecked())
+            res.add(getString(R.string.monthly));
+        if (emer.isChecked())
+            res.add(getString(R.string.emergency));
+        if (integ.isChecked())
+            res.add(getString(R.string.integral));
+        if (prot.isChecked())
+            res.add(getString(R.string.protective));
+        if (event.isChecked())
+            res.add(getString(R.string.eventful));
+        return res;
+    }
+
+    protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        // заголовок
+        adb.setTitle("Подтвердите запрос");
+        // сообщение
+        adb.setMessage(query.toString());
+        // иконка
+        adb.setIcon(android.R.drawable.ic_dialog_info);
+        // кнопка положительного ответа
+        adb.setPositiveButton("Да", myClickListener);
+        // кнопка отрицательного ответа
+        adb.setNegativeButton("Нет", myClickListener);
+        // создаем диалог
+        return adb.create();
+    }
+
+    DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                // положительная кнопка
+                case Dialog.BUTTON_POSITIVE:
+                    Toast.makeText(getApplicationContext(),
+                           "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
+                    break;
+                // негативная кнопка
+                case Dialog.BUTTON_NEGATIVE:
+                    Toast.makeText(getApplicationContext(),
+                            "Исправляй", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
 }

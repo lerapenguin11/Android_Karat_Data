@@ -2,4 +2,11 @@
     <string name="app_name">КАРАТ-ДАТА</string>
     <string name="eText_name_save">Введите имя для сохранения</string>
     <string name="tView_device">Приборы</string>
+    <string name="hourly">Почасовой</string>
+    <string name="daily">Посуточный</string>
+    <string name="monthly">Помесячный</string>
+    <string name="emergency">Аварийный</string>
+    <string name="integral">Интегральный</string>
+    <string name="protective">Защитный</string>
+    <string name="eventful">Событий</string>
 </resources>
