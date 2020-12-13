@@ -135,24 +135,24 @@ public class MainActivity extends AppCompatActivity {
         CheckBox h = findViewById(R.id.checkBox3);
         CheckBox d = findViewById(R.id.checkBox2);
         CheckBox m = findViewById(R.id.checkBox4);
-        CheckBox avar = findViewById(R.id.checkBox6);
+        CheckBox emer = findViewById(R.id.checkBox6);
         CheckBox integ = findViewById(R.id.checkBox5);
-        CheckBox zasch = findViewById(R.id.checkBox8);
-        CheckBox sobyt = findViewById(R.id.checkBox7);
+        CheckBox prot = findViewById(R.id.checkBox8);
+        CheckBox event = findViewById(R.id.checkBox7);
         if (h.isChecked())
-            res.add("Почасовой");
+            res.add(getString(R.string.hourly));
         if (d.isChecked())
-            res.add("Посуточный");
+            res.add(getString(R.string.daily));
         if (m.isChecked())
-            res.add("Помесячный");
-        if (avar.isChecked())
-            res.add("Аварийный");
+            res.add(getString(R.string.monthly));
+        if (emer.isChecked())
+            res.add(getString(R.string.emergency));
         if (integ.isChecked())
-            res.add("Интегральный");
-        if (zasch.isChecked())
-            res.add("Защитный");
-        if (sobyt.isChecked())
-            res.add("Событий");
+            res.add(getString(R.string.integral));
+        if (prot.isChecked())
+            res.add(getString(R.string.protective));
+        if (event.isChecked())
+            res.add(getString(R.string.eventful));
         return res;
     }
 }
