@@ -64,7 +64,9 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp" />
 
             <Spinner
                 android:id="@+id/spinner_device"
@@ -90,7 +92,9 @@
                 android:background="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="@+id/include"
                 app:layout_constraintTop_toTopOf="@+id/include"
-                app:srcCompat="@drawable/ic_setting_foreground" />
+                app:srcCompat="@drawable/ic_setting_foreground"
+                android:layout_marginRight="10dp"
+                tools:ignore="VectorDrawableCompat" />
 
 <!--            <CalendarView-->
 <!--                android:id="@+id/calendarView"-->
@@ -171,7 +175,8 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tViewArchive" />
+                app:layout_constraintTop_toBottomOf="@+id/tViewArchive"
+                android:layout_marginLeft="15dp" />
 
             <CheckBox
                 android:id="@+id/checkBox4"

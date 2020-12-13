@@ -36,11 +36,25 @@ public class MainActivity extends AppCompatActivity {
 
     String[] device = {"2-213/223", "306/7/8"};
 
+    String port, ip, adr;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+
+        //забираем данные из настроек
+        port = intent.getStringExtra("port");
+        ip = intent.getStringExtra("ip");
+        adr = intent.getStringExtra("adr");
+
+        Toast.makeText(getApplicationContext(),
+                ("Main - Address: "+ip+":"+port+"/"
+                        +adr+"\n"), Toast.LENGTH_LONG).show();
 
         //toolbar
         toolbar = findViewById(R.id.myToolBar);
