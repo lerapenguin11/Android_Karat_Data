@@ -92,20 +92,38 @@
                 app:layout_constraintTop_toTopOf="@+id/include"
                 app:srcCompat="@drawable/ic_setting_foreground" />
 
-            <CalendarView
-                android:id="@+id/calendarView"
-                style="@android:style/Widget.Material.CalendarView"
+<!--            <CalendarView-->
+<!--                android:id="@+id/calendarView"-->
+<!--                style="@android:style/Widget.Material.CalendarView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:layout_marginTop="225dp"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.0"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/include"-->
+<!--                app:layout_constraintVertical_bias="0.039" />-->
+
+            <DatePicker
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:id="@+id/datePicker"
                 android:layout_marginTop="225dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/include"
-                app:layout_constraintVertical_bias="0.039" />
+                app:layout_constraintVertical_bias="0.039"
+
+            />
 
             <TextView
                 android:id="@+id/textView_date"
@@ -132,7 +150,7 @@
                 android:textColor="@color/colorPrimaryDarker"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+                app:layout_constraintTop_toBottomOf="@+id/datePicker" />
 
             <CheckBox
                 android:id="@+id/checkBox2"
@@ -148,7 +166,7 @@
                 android:id="@+id/checkBox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="15dp"
                 android:text="почасовой"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="20sp"

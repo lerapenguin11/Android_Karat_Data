@@ -1,16 +1,19 @@
 package com.example.androidkaratdata;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -27,12 +30,13 @@ public class MainActivity extends AppCompatActivity {
     EditText editText_name;
     TextView textView_device;
     Spinner spinnerDevice;
-    CalendarView calendarView;
+    DatePicker datePicker;
     TextView textView;
     ImageButton imageButtonSetting;
 
     String[] device = {"2-213/223", "306/7/8"};
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,13 +62,12 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDevice.setAdapter(adapter);
 
-        calendarView = findViewById(R.id.calendarView);
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        datePicker = findViewById(R.id.datePicker);
+        datePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year,
-                                            int month, int dayOfMonth) {
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 int cYear = year;
-                int cMonth = month;
+                int cMonth = monthOfYear;
                 int cDay = dayOfMonth;
                 String selectedDate = new StringBuilder().append(cMonth + 1)
                         .append("-").append(cDay).append("-").append(cYear)
