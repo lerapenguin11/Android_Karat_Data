@@ -56,8 +56,8 @@ public class DeviceQuery {
             sb.append("\n");
         }
         return adr + sb.toString() +
-                start.toString() + "\n" +
-                resName;
+                "Date: " + start.toString() + "\n" +
+                "File: " + resName;
 
     }
 }
