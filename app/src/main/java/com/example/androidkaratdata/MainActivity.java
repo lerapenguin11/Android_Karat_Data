@@ -1,23 +1,22 @@
 package com.example.androidkaratdata;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import com.example.androidkaratdata.queryclass.DeviceQuery;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 
@@ -39,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     ImageButton imageButtonSetting;
     Button buttonRead;
+    DeviceQuery query;
 
     String[] device = {"2-213/223", "306/7/8"};
 
@@ -118,12 +117,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Date start = new Date(cYear, cMonth, cDay);
-                DeviceQuery query = new DeviceQuery(
+                query = new DeviceQuery(
                         port, ip, adr, start,
                         getArchivesTypes(), editText_name.getText().toString()
                 );
-                Toast.makeText(getApplicationContext(),
-                        query.toString(), Toast.LENGTH_LONG).show();
+                /*Toast.makeText(getApplicationContext(),
+                        query.toString(), Toast.LENGTH_LONG).show();*/
+                showDialog(1);
                 /*Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);*/
             }
@@ -155,4 +155,37 @@ public class MainActivity extends AppCompatActivity {
             res.add(getString(R.string.eventful));
         return res;
     }
+
+    protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        // заголовок
+        adb.setTitle("Подтвердите запрос");
+        // сообщение
+        adb.setMessage(query.toString());
+        // иконка
+        adb.setIcon(android.R.drawable.ic_dialog_info);
+        // кнопка положительного ответа
+        adb.setPositiveButton("Да", myClickListener);
+        // кнопка отрицательного ответа
+        adb.setNegativeButton("Нет", myClickListener);
+        // создаем диалог
+        return adb.create();
+    }
+
+    DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                // положительная кнопка
+                case Dialog.BUTTON_POSITIVE:
+                    Toast.makeText(getApplicationContext(),
+                           "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
+                    break;
+                // негативная кнопка
+                case Dialog.BUTTON_NEGATIVE:
+                    Toast.makeText(getApplicationContext(),
+                            "Исправляй", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
 }
