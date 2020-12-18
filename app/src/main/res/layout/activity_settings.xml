@@ -19,8 +19,8 @@
         android:layout_marginTop="72dp"
         android:layout_marginEnd="15dp"
         android:text="Port"
-        android:textSize="34sp"
         android:textColor="@color/colorPrimaryDarker"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.034"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,39 +31,39 @@
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="97dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
         android:hint="Введите Port"
         android:inputType="textMultiLine"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include"
-        app:layout_constraintVertical_bias="0.024" />
+        app:layout_constraintTop_toTopOf="@+id/textView_Port"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="172dp"
+        android:layout_marginTop="63dp"
         android:layout_marginEnd="15dp"
         android:text="IP адрес"
         android:textColor="@color/colorPrimaryDarker"
-        android:textSize="34sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include" />
+        app:layout_constraintTop_toTopOf="@+id/editText_name" />
 
     <EditText
         android:id="@+id/editText_ID"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
         android:hint="Введите ID адрес"
         android:inputType="textMultiLine"
@@ -72,30 +72,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include"
-        app:layout_constraintVertical_bias="0.044" />
+        app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.015" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="269dp"
+        android:layout_marginTop="63dp"
         android:layout_marginEnd="15dp"
         android:text="Адрес приборов"
         android:textColor="@color/colorPrimaryDarker"
-        android:textSize="34sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include" />
+        app:layout_constraintTop_toTopOf="@+id/editText_ID" />
 
     <EditText
         android:id="@+id/editText_a"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="317dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
         android:hint="Введите адрес прибора"
         android:inputType="textMultiLine"
@@ -104,14 +104,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include"
+        app:layout_constraintTop_toTopOf="@+id/textView3"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/image_back_button"
-        android:layout_width="46dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="38dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="10dp"
         android:background="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.975"
