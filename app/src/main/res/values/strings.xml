@@ -1,7 +1,7 @@
 ﻿<resources>
     <string name="app_name">КАРАТ-ДАТА</string>
     <string name="eText_name_save">Введите имя для сохранения</string>
-    <string name="tView_device">Приборы</string>
+    <string name="tView_device"> Приборы</string>
     <string name="hourly">Почасовой</string>
     <string name="daily">Посуточный</string>
     <string name="monthly">Помесячный</string>
@@ -9,4 +9,8 @@
     <string name="integral">Интегральный</string>
     <string name="protective">Защитный</string>
     <string name="eventful">Событий</string>
+    <string-array name="spinner_array">
+        <item>2-213/223</item>
+        <item>306/7/8</item>
+    </string-array>
 </resources>
