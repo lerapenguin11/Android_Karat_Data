@@ -94,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year,
                                             int month, int dayOfMonth) {
-                int cYear = year;
-                int cMonth = month;
-                int cDay = dayOfMonth;
+                cYear = year;
+                cMonth = month;
+                cDay = dayOfMonth;
                 String selectedDate = new StringBuilder().append(cMonth + 1)
                         .append("-").append(cDay).append("-").append(cYear)
                         .append(" ").toString();
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         buttonRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date start = new Date(cYear, cMonth, cDay);
+                Date start = new Date(cYear - 1900, cMonth, cDay);
                 query = new DeviceQuery(
                         port, ip, adr, start,
                         getArchivesTypes(), editText_name.getText().toString()

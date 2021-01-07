@@ -24,6 +24,7 @@ public class SettingActivity extends MainActivity {
     TextView ip_text;
     TextView usb_text;
     Spinner spinner_usb;
+    RadioButton radioTCP, radioUSB;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -64,6 +65,9 @@ public class SettingActivity extends MainActivity {
         spinner_usb.setAdapter(adapter);
 
         spinner_usb.setVisibility(View.GONE);
+
+        radioTCP = (RadioButton) findViewById(R.id.TCP);
+        radioUSB = (RadioButton) findViewById(R.id.usb);
     }
 
     public void onRadioButtonClicked(View view) {
@@ -72,10 +76,16 @@ public class SettingActivity extends MainActivity {
             case R.id.TCP:
                 ip_text.setVisibility(View.VISIBLE);
                 ip.setVisibility(View.VISIBLE);
+                usb_text.setVisibility(View.GONE);
+                spinner_usb.setVisibility(View.GONE);
+                radioUSB.setChecked(false);
                 break;
             case R.id.usb:
                 usb_text.setVisibility(View.VISIBLE);
                 spinner_usb.setVisibility(View.VISIBLE);
+                ip_text.setVisibility(View.GONE);
+                ip.setVisibility(View.GONE);
+                radioTCP.setChecked(false);
                 break;
         }
     }
