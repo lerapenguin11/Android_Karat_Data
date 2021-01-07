@@ -85,26 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
         //spinner activity_main
         spinnerDevice = findViewById(R.id.spinner_device);
-        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, device);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerDevice.setAdapter(adapter);*/
+
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.spinner_array, R.layout.spinner_item);
         spinnerDevice.setAdapter(adapter);
-
-        /*datePicker = findViewById(R.id.datePicker);
-        datePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                cYear = year;
-                cMonth = monthOfYear;
-                cDay = dayOfMonth;
-                String selectedDate = new StringBuilder().append(cMonth + 1)
-                        .append("-").append(cDay).append("-").append(cYear)
-                        .append(" ").toString();
-                //Toast.makeText(getApplicationContext(), selectedDate, Toast.LENGTH_LONG).show();
-                textView.setText("Начать с " + selectedDate);
-            }
-        });*/
 
         calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -143,11 +126,6 @@ public class MainActivity extends AppCompatActivity {
                         port, ip, adr, start,
                         getArchivesTypes(), editText_name.getText().toString()
                 );
-                /*Toast.makeText(getApplicationContext(),
-                        query.toString(), Toast.LENGTH_LONG).show();*/
-                showDialog(1);
-                /*Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-                startActivity(intent);*/
             }
         });
     }

@@ -5,8 +5,13 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -16,6 +21,9 @@ public class SettingActivity extends MainActivity {
     EditText port;
     EditText ip;
     EditText adr;
+    TextView ip_text;
+    TextView usb_text;
+    Spinner spinner_usb;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -43,5 +51,32 @@ public class SettingActivity extends MainActivity {
                 startActivity(intent);
             }
         });
+
+        ip_text = findViewById(R.id.textView2);
+        ip_text.setVisibility(View.GONE);
+        ip.setVisibility(View.GONE);
+        usb_text = findViewById(R.id.textView_usb);
+        usb_text.setVisibility(View.GONE);
+
+        spinner_usb = findViewById(R.id.spinner_usb);
+
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.spinner_array_usb, R.layout.spinner_item);
+        spinner_usb.setAdapter(adapter);
+
+        spinner_usb.setVisibility(View.GONE);
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        switch(view.getId()) {
+            case R.id.TCP:
+                ip_text.setVisibility(View.VISIBLE);
+                ip.setVisibility(View.VISIBLE);
+                break;
+            case R.id.usb:
+                usb_text.setVisibility(View.VISIBLE);
+                spinner_usb.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }
