@@ -16,16 +16,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.androidkaratdata.queryclass.DeviceQuery;
+import com.example.androidkaratdata.models.DeviceQuery;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -126,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         port, ip, adr, start,
                         getArchivesTypes(), editText_name.getText().toString()
                 );
+                showDialog(1);
             }
         });
     }
@@ -179,11 +178,12 @@ public class MainActivity extends AppCompatActivity {
                 case Dialog.BUTTON_POSITIVE:
                     Toast.makeText(getApplicationContext(),
                            "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(MainActivity.this, TCPTerminalActivity.class));
                     break;
                 // негативная кнопка
                 case Dialog.BUTTON_NEGATIVE:
                     Toast.makeText(getApplicationContext(),
-                            "Исправляй", Toast.LENGTH_LONG).show();
+                            "Исправьте поля", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

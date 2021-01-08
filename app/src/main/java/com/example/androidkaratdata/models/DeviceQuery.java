@@ -1,4 +1,4 @@
-package com.example.androidkaratdata.queryclass;
+package com.example.androidkaratdata.models;
 
 import java.util.ArrayList;
 import java.util.Date;
