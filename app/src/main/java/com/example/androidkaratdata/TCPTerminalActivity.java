@@ -12,7 +12,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.androidkaratdata.models.ArchivesConfig;
+import com.example.androidkaratdata.models.DeviceQuery;
 import com.example.androidkaratdata.models.RecordRow;
+import com.example.androidkaratdata.utils.ArchivesRegisters;
 import com.example.androidkaratdata.utils.CSVCreator;
 import com.intelligt.modbus.jlibmodbus.exception.IllegalDataAddressException;
 import com.intelligt.modbus.jlibmodbus.exception.IllegalDataValueException;
@@ -42,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.jar.Attributes;
 
 import static com.example.androidkaratdata.utils.Util.getHexContent;
 import static com.example.androidkaratdata.utils.Util.printArchivesCfg;
@@ -54,22 +58,29 @@ public class TCPTerminalActivity extends AppCompatActivity {
     static ArrayAdapter<String> adapter;
     File filesDir;
     Date start;
+    DeviceQuery query;
+    HashMap<String, Integer> NameToCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tcp_terminal);
+
+        query = (DeviceQuery) getIntent().getSerializableExtra("query");
         new Thread(new Task()).start();
         ListView listView = (ListView) findViewById(R.id.lw);
+        NameToCode = new ArchivesRegisters().getNameToCode();
+
         msgs = new ArrayList<>();
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, msgs);
         listView.setAdapter(adapter);
-        start = new Date(2020, 11,1);
+        start = query.getStart();
+        Log.d("Time", start.toString());
 
         ImageView image = findViewById(R.id.image_load);
         image.setBackgroundResource(R.drawable.animation);
-        AnimationDrawable animation = (AnimationDrawable)image.getBackground();
+        final AnimationDrawable animation = (AnimationDrawable)image.getBackground();
         animation.start();
     }
 
@@ -85,9 +96,9 @@ public class TCPTerminalActivity extends AppCompatActivity {
             filesDir = getApplicationContext().getFilesDir();
             try {
                 TcpParameters tcpParameter = new TcpParameters();
-                InetAddress host = InetAddress.getByName("192.168.0.106");
+                InetAddress host = InetAddress.getByName(query.getIP());
                 tcpParameter.setHost(host);
-                tcpParameter.setPort(50000);
+                tcpParameter.setPort(Integer.parseInt(query.getPort()));
                 tcpParameter.setKeepAlive(true);
                 SerialUtils.setSerialPortFactory(new SerialPortFactoryTcpServer(tcpParameter));
                 SerialParameters serialParameter = new SerialParameters();
@@ -140,52 +151,9 @@ public class TCPTerminalActivity extends AppCompatActivity {
                     dateTime10Response = Response10DateTime(start);
                 }
 
-                /*
-                ПОМЕСЯЧНЫЙ
-                 */
-
-                getMsgToUI("Чтение помесячного архива");
-                int c = 0;
-                rows.add(new String[]{"Помесячный архив"});
-                rows.add(cfg.getTitles());
-                if (dateTime10Response != null){
-                    while (true){
-                        int offset = c > 0 ? 0x0020 : 0x0025;
-                        ReadHoldingRegistersResponse row = ResponseFromClassicRequest(offset, Integer.parseInt("F0",16) / 2, "Get Month Row");
-                        if ((String.valueOf(getHexContent(row).charAt(0)) + getHexContent(row).charAt(1)).equals("ff")) {
-                            break;
-                        } else {
-                            RecordRow recordRow = new RecordRow(cfg, getHexContent(row));
-                            //creator.printRow(recordRow.getRowArray(recordRow));
-                            rows.add(recordRow.getRowArray(recordRow));
-                            getMsgToUI(Arrays.asList(recordRow.getRowArray(recordRow)).toString());
-                            c++;
-                        }
-                    }
-                }
-
-                /*
-                ПОСУТОЧНЫЙ
-                 */
-
-                getMsgToUI("Чтение посуточного архива");
-                c = 0;
-                rows.add(new String[]{"Посуточный архив"});
-                rows.add(cfg.getTitles());
-                if (dateTime10Response != null){
-                    while (true){
-                        int offset = c > 0 ? 0x0010 : 0x0015;
-                        ReadHoldingRegistersResponse row = ResponseFromClassicRequest(offset, Integer.parseInt("F0",16) / 2, "Get Month Row");
-                        if ((String.valueOf(getHexContent(row).charAt(0)) + getHexContent(row).charAt(1)).equals("ff")) {
-                            break;
-                        } else {
-                            RecordRow recordRow = new RecordRow(cfg, getHexContent(row));
-                            //creator.printRow(recordRow.getRowArray(recordRow));
-                            rows.add(recordRow.getRowArray(recordRow));
-                            getMsgToUI(Arrays.asList(recordRow.getRowArray(recordRow)).toString());
-                            c++;
-                        }
-                    }
+                if (dateTime10Response != null) {
+                    for (String type: query.getArchives())
+                        readArchiveByType(type, NameToCode.get(type));
                 }
 
                 master.disconnect();
@@ -211,6 +179,27 @@ public class TCPTerminalActivity extends AppCompatActivity {
             }
         }
 
+        private void readArchiveByType(String typeStr, int type) throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
+            getMsgToUI("Чтение архива: " + typeStr);
+            int c = 0;
+            int next = type + 5;
+            rows.add(new String[]{typeStr +" архив"});
+            rows.add(cfg.getTitles());
+            while (true){
+                int offset = c > 0 ? type : next;
+                ReadHoldingRegistersResponse row = ResponseFromClassicRequest(offset, Integer.parseInt("F0",16) / 2, "Get " + typeStr);
+                if ((String.valueOf(getHexContent(row).charAt(0)) + getHexContent(row).charAt(1)).equals("ff")) {
+                    break;
+                } else {
+                    RecordRow recordRow = new RecordRow(cfg, getHexContent(row));
+                    //creator.printRow(recordRow.getRowArray(recordRow));
+                    rows.add(recordRow.getRowArray(recordRow));
+                    getMsgToUI(Arrays.asList(recordRow.getRowArray(recordRow)).toString());
+                    c++;
+                }
+            }
+        }
+
         private WriteMultipleRegistersResponse Response10DateTime(Date start) throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
             WriteMultipleRegistersResponse response = null;
             WriteMultipleRegistersRequest test = new WriteMultipleRegistersRequest();
@@ -221,8 +210,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
             byte day = Byte.parseByte(Integer.toHexString(start.getDate()), 16);
             Log.d("date", String.valueOf(start.getMonth() + 1));
             byte month = Byte.parseByte(Integer.toHexString(start.getMonth() + 1), 16);
-            Log.d("date", String.valueOf(start.getYear() - 2000));
-            byte year = Byte.parseByte(Integer.toHexString(start.getYear() - 2000), 16);
+            Log.d("date", String.valueOf(start.getYear()));
+            byte year = Byte.parseByte(Integer.toHexString(start.getYear()), 16);
             test.setBytes(new byte[]{0x00, day, month, year});
             master.processRequest(test);
             response = (WriteMultipleRegistersResponse) test.getResponse();
@@ -240,7 +229,7 @@ public class TCPTerminalActivity extends AppCompatActivity {
         }
 
         private ReadHoldingRegistersResponse ResponseFromClassicRequest(int offset, int quantity, String msg) throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
-            int slaveId = 1;
+            int slaveId = Integer.parseInt(query.getDevAdr());
             //int quantity = 1;
 
             ReadHoldingRegistersResponse response = null;
@@ -257,8 +246,6 @@ public class TCPTerminalActivity extends AppCompatActivity {
             Log.d("hex data", getHexContent(response));
             return response;
         }
-
-
     }
 }
 

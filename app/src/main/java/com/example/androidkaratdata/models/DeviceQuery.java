@@ -1,9 +1,10 @@
 package com.example.androidkaratdata.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class DeviceQuery {
+public class DeviceQuery implements Serializable {
     private final String port;
     private final String IP;
     private final String devAdr;

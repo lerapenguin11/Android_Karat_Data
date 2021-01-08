@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingActivity"/>
-        <activity android:name=".TCPTerminalActivity"/>
+        <activity android:name=".TCPTerminalActivity" android:launchMode="singleTop"/>
+
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -15,8 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class SettingActivity extends MainActivity {
+public class SettingActivity extends AppCompatActivity {
     ImageButton imageButton;
     EditText port;
     EditText ip;
@@ -37,6 +39,15 @@ public class SettingActivity extends MainActivity {
         port = findViewById(R.id.editText_name);
         ip = findViewById(R.id.editText_ID);
         adr = findViewById(R.id.editText_a);
+        if (savedInstanceState != null) {
+            Log.d("Restore", savedInstanceState.getString("IP"));
+            if (savedInstanceState.containsKey("IP"))
+                ip.setText((String) savedInstanceState.getString("IP"));
+            if (savedInstanceState.containsKey("DeviceID"))
+                adr.setText((String) savedInstanceState.getString("DeviceID"));
+            if (savedInstanceState.containsKey("Port"))
+                port.setText((String) savedInstanceState.getString("Port"));
+        }
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,5 +99,23 @@ public class SettingActivity extends MainActivity {
                 radioTCP.setChecked(false);
                 break;
         }
+    }
+
+   // @Override
+   // protected void onRestoreInstanceState(Bundle savedInstanceState) {
+   //     super.onRestoreInstanceState(savedInstanceState);
+   //
+  //  }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d("Save", "Save");
+        if (!ip.getText().toString().equals("")) {
+            outState.putString("IP", ip.getText().toString());
+            Log.d("Save", "IP");
+        }
+        if (!port.getText().toString().equals(""))  outState.putString("Port", port.getText().toString());
+        if (!adr.getText().toString().equals(""))  outState.putString("DeviceID", adr.getText().toString());
+        super.onSaveInstanceState(outState);
     }
 }

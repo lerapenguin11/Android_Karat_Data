@@ -176,9 +176,11 @@ public class MainActivity extends AppCompatActivity {
             switch (which) {
                 // положительная кнопка
                 case Dialog.BUTTON_POSITIVE:
-                    Toast.makeText(getApplicationContext(),
-                           "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(MainActivity.this, TCPTerminalActivity.class));
+                    //Toast.makeText(getApplicationContext(),
+                    //       "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
+                    Intent toTerm = new Intent(MainActivity.this, TCPTerminalActivity.class);
+                    toTerm.putExtra("query", query);
+                    startActivity(toTerm);
                     break;
                 // негативная кнопка
                 case Dialog.BUTTON_NEGATIVE:

@@ -97,6 +97,7 @@ public class RecordRow {
         Long i = Long.parseLong(reverse, 16);
         Float f = Float.intBitsToFloat(i.intValue());
         f = Precision.round(f, 4);
+        if (f > 10000) f = 0.0f;
         Log.d("Data Float", four.toString() + " ---> " + f.toString());
         return f;
     }
