@@ -1,6 +1,8 @@
 package com.example.androidkaratdata;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,9 @@ public class SettingActivity extends AppCompatActivity {
     TextView usb_text;
     Spinner spinner_usb;
     RadioButton radioTCP, radioUSB;
+    Boolean mode = true;
+    public static final String APP_PREFERENCES = "settingsMemory";
+    SharedPreferences mSettings;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -34,36 +39,12 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         imageButton = findViewById(R.id.image_back_button);
         port = findViewById(R.id.editText_name);
         ip = findViewById(R.id.editText_ID);
         adr = findViewById(R.id.editText_a);
-        if (savedInstanceState != null) {
-            Log.d("Restore", savedInstanceState.getString("IP"));
-            if (savedInstanceState.containsKey("IP"))
-                ip.setText((String) savedInstanceState.getString("IP"));
-            if (savedInstanceState.containsKey("DeviceID"))
-                adr.setText((String) savedInstanceState.getString("DeviceID"));
-            if (savedInstanceState.containsKey("Port"))
-                port.setText((String) savedInstanceState.getString("Port"));
-        }
-
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-                intent.putExtra("port", port.getText().toString());
-                intent.putExtra("ip", ip.getText().toString());
-                intent.putExtra("adr", adr.getText().toString());
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        ("Setting - Address: "+ip.getText().toString()+":"+port.getText().toString()+"/"
-                                +adr.getText().toString()+"\n"), Toast.LENGTH_LONG);
-                toast.show();
-                startActivity(intent);
-            }
-        });
-
         ip_text = findViewById(R.id.textView2);
         ip_text.setVisibility(View.GONE);
         ip.setVisibility(View.GONE);
@@ -79,43 +60,67 @@ public class SettingActivity extends AppCompatActivity {
 
         radioTCP = (RadioButton) findViewById(R.id.TCP);
         radioUSB = (RadioButton) findViewById(R.id.usb);
+
+        if(mSettings.contains("IP")) ip.setText(mSettings.getString("IP", ""));
+        if(mSettings.contains("Port")) port.setText(mSettings.getString("Port", ""));
+        if(mSettings.contains("Adr")) adr.setText(mSettings.getString("Adr", ""));
+        if(mSettings.contains("Mode")) {
+            if (mSettings.getBoolean("Mode", true))
+                enableTCP();
+            else enableUSB();
+        }
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = mSettings.edit();
+                editor.putString("IP", ip.getText().toString());
+                editor.putString("Port", port.getText().toString());
+                editor.putString("Adr", adr.getText().toString());
+                editor.putBoolean("Mode", mode);
+                editor.apply();
+                Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+                intent.putExtra("port", port.getText().toString());
+                intent.putExtra("ip", ip.getText().toString());
+                intent.putExtra("adr", adr.getText().toString());
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        ("Setting - Address: "+ip.getText().toString()+":"+port.getText().toString()+"/"
+                                +adr.getText().toString()+"\n"), Toast.LENGTH_LONG);
+                toast.show();
+                startActivity(intent);
+            }
+        });
     }
 
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
         switch(view.getId()) {
             case R.id.TCP:
-                ip_text.setVisibility(View.VISIBLE);
-                ip.setVisibility(View.VISIBLE);
-                usb_text.setVisibility(View.GONE);
-                spinner_usb.setVisibility(View.GONE);
-                radioUSB.setChecked(false);
+                enableTCP();
                 break;
             case R.id.usb:
-                usb_text.setVisibility(View.VISIBLE);
-                spinner_usb.setVisibility(View.VISIBLE);
-                ip_text.setVisibility(View.GONE);
-                ip.setVisibility(View.GONE);
-                radioTCP.setChecked(false);
+                enableUSB();
                 break;
         }
     }
 
-   // @Override
-   // protected void onRestoreInstanceState(Bundle savedInstanceState) {
-   //     super.onRestoreInstanceState(savedInstanceState);
-   //
-  //  }
+    private void enableUSB() {
+        radioTCP.setChecked(true);
+        usb_text.setVisibility(View.VISIBLE);
+        spinner_usb.setVisibility(View.VISIBLE);
+        ip_text.setVisibility(View.GONE);
+        ip.setVisibility(View.GONE);
+        radioTCP.setChecked(false);
+        mode = false;
+    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.d("Save", "Save");
-        if (!ip.getText().toString().equals("")) {
-            outState.putString("IP", ip.getText().toString());
-            Log.d("Save", "IP");
-        }
-        if (!port.getText().toString().equals(""))  outState.putString("Port", port.getText().toString());
-        if (!adr.getText().toString().equals(""))  outState.putString("DeviceID", adr.getText().toString());
-        super.onSaveInstanceState(outState);
+    private void enableTCP() {
+        radioUSB.setChecked(true);
+        ip_text.setVisibility(View.VISIBLE);
+        ip.setVisibility(View.VISIBLE);
+        usb_text.setVisibility(View.GONE);
+        spinner_usb.setVisibility(View.GONE);
+        radioUSB.setChecked(false);
+        mode = true;
     }
 }

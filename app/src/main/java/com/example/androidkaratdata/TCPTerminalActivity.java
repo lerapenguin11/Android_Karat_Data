@@ -1,8 +1,12 @@
 package com.example.androidkaratdata;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -10,6 +14,7 @@ import android.widget.ListView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.example.androidkaratdata.models.ArchivesConfig;
 import com.example.androidkaratdata.models.DeviceQuery;
@@ -34,12 +39,17 @@ import com.intelligt.modbus.jlibmodbus.serial.SerialPortFactoryTcpClient;
 import com.intelligt.modbus.jlibmodbus.serial.SerialPortFactoryTcpServer;
 import com.intelligt.modbus.jlibmodbus.serial.SerialUtils;
 import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
+import com.opencsv.CSVWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -158,13 +168,14 @@ public class TCPTerminalActivity extends AppCompatActivity {
 
                 master.disconnect();
                 getMsgToUI("Запись архива");
-                creator = new CSVCreator(filesDir, rows);
+                writeAndShareCSV();
 
             } catch (SerialPortException e) {
                 e.printStackTrace();
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (ModbusIOException e) {
+                getMsgToUI("Прибор не отвечает. Выйдите и попробуйте снова.");
                 e.printStackTrace();
             } catch (IllegalDataValueException e) {
                 e.printStackTrace();
@@ -177,6 +188,41 @@ public class TCPTerminalActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        private void writeAndShareCSV() throws IOException {
+            //creator = new CSVCreator(filesDir, rows);
+            String fname = String.valueOf(LocalDateTime.now());
+            File fileDir = filesDir;
+            String pathToExternalStorage = Environment.getExternalStorageDirectory().toString();
+            //File appDirectory = new File(fileDir + "/" + "Karat");
+            // have the object build the directory structure, if needed.
+            //appDirectory.mkdirs();
+            try (
+               Writer writer = Files.newBufferedWriter(Paths.get(fileDir + fname + ".csv"));
+            ) {
+                CSVWriter csvWriter = new CSVWriter(writer,
+                        CSVWriter.DEFAULT_SEPARATOR,
+                        CSVWriter.NO_QUOTE_CHARACTER,
+                        CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                        CSVWriter.DEFAULT_LINE_END);
+                for (String[] row: rows)
+                    csvWriter.writeNext(row);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Context context = getApplicationContext();
+            File filelocation = new File(fileDir + fname + ".csv");
+            Uri path = FileProvider.getUriForFile(context, "com.example.androidkaratdata.fileprovider", filelocation);
+            Intent fileIntent = new Intent(Intent.ACTION_SEND);
+            fileIntent.setType("text/csv");
+            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Архив"+fname);
+            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+            startActivity(fileIntent);
         }
 
         private void readArchiveByType(String typeStr, int type) throws ModbusNumberException, ModbusProtocolException, ModbusIOException {

@@ -24,6 +24,15 @@
         </activity>
         <activity android:name=".SettingActivity"/>
         <activity android:name=".TCPTerminalActivity" android:launchMode="singleTop"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.androidkaratdata.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
     </application>
 
