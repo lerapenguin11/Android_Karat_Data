@@ -9,7 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -22,6 +24,7 @@ import com.example.androidkaratdata.models.DeviceQuery;
 import com.example.androidkaratdata.models.RecordRow;
 import com.example.androidkaratdata.utils.ArchivesRegisters;
 import com.example.androidkaratdata.utils.CSVCreator;
+import com.google.android.material.snackbar.Snackbar;
 import com.intelligt.modbus.jlibmodbus.exception.IllegalDataAddressException;
 import com.intelligt.modbus.jlibmodbus.exception.IllegalDataValueException;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
@@ -68,10 +71,13 @@ import static com.example.androidkaratdata.utils.Util.printSerNumber;
 public class TCPTerminalActivity extends AppCompatActivity {
     static ArrayList<String> msgs;
     static ArrayAdapter<String> adapter;
-    File filesDir;
+    File directory;
     Date start;
     DeviceQuery query;
     HashMap<String, Integer> NameToCode;
+    ImageButton share;
+    ImageView image;
+    String fname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,22 +96,38 @@ public class TCPTerminalActivity extends AppCompatActivity {
         start = query.getStart();
         Log.d("Time", start.toString());
 
-        ImageView image = findViewById(R.id.image_load);
-        image.setBackgroundResource(R.drawable.animation);
-        final AnimationDrawable animation = (AnimationDrawable)image.getBackground();
-        animation.start();
+        image = findViewById(R.id.image_load);
+        image.setBackgroundResource(R.drawable.ic_baseline_connect);
+        share = findViewById(R.id.share);
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareCSV();
+            }
+        });
+    }
+
+    private void shareCSV() {
+        Context context = getApplicationContext();
+        File filelocation = new File( directory + "/" + fname + ".csv");
+        Uri path = FileProvider.getUriForFile(context, "com.example.androidkaratdata.fileprovider", filelocation);
+        Intent fileIntent = new Intent(Intent.ACTION_SEND);
+        fileIntent.setType("text/csv");
+        fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Архив"+fname);
+        fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+        startActivity(fileIntent);
     }
 
     public class Task extends Thread{
         private ModbusMaster master;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
         ArchivesConfig cfg;
-        CSVCreator creator;
         ArrayList<String[]> rows = new ArrayList<>();
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         public void run(){
-            filesDir = getApplicationContext().getFilesDir();
             try {
                 TcpParameters tcpParameter = new TcpParameters();
                 InetAddress host = InetAddress.getByName(query.getIP());
@@ -199,32 +221,11 @@ public class TCPTerminalActivity extends AppCompatActivity {
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         private void writeAndShareCSV() throws IOException {
-            //creator = new CSVCreator(filesDir, rows);
-            String fname = String.valueOf(LocalDateTime.now());
-            /*File fileDir = filesDir;
-            //String pathToExternalStorage = Environment.getExternalStorageDirectory().toString();
-            //File appDirectory = new File(fileDir + "/" + "Karat");
-            // have the object build the directory structure, if needed.
-            //appDirectory.mkdirs();
-            try (
-               Writer writer = Files.newBufferedWriter(Paths.get(fileDir + fname + ".csv"));
-            ) {
-                CSVWriter csvWriter = new CSVWriter(writer,
-                        CSVWriter.DEFAULT_SEPARATOR,
-                        CSVWriter.NO_QUOTE_CHARACTER,
-                        CSVWriter.DEFAULT_ESCAPE_CHARACTER,
-                        CSVWriter.DEFAULT_LINE_END);
-                for (String[] row: rows)
-                    csvWriter.writeNext(row);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
+            fname = String.valueOf(LocalDateTime.now());
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            File directory = cw.getExternalFilesDir("Karat");
+            directory = cw.getExternalFilesDir("Karat");
 
-            CSVWriter csvWriter = new CSVWriter(new FileWriter(directory.toString() + fname + ".csv"),
+            CSVWriter csvWriter = new CSVWriter(new FileWriter(directory.toString() + "/" + fname + ".csv"),
                     CSVWriter.DEFAULT_SEPARATOR,
                     CSVWriter.NO_QUOTE_CHARACTER,
                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
@@ -233,15 +234,21 @@ public class TCPTerminalActivity extends AppCompatActivity {
                 csvWriter.writeNext(row);
             csvWriter.close();
 
-            Context context = getApplicationContext();
-            File filelocation = new File( directory + fname + ".csv");
-            Uri path = FileProvider.getUriForFile(context, "com.example.androidkaratdata.fileprovider", filelocation);
-            Intent fileIntent = new Intent(Intent.ACTION_SEND);
-            fileIntent.setType("text/csv");
-            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Архив"+fname);
-            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
-            startActivity(fileIntent);
+            TCPTerminalActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    image.setVisibility(View.GONE);
+                    share.setVisibility(View.VISIBLE);
+                    Snackbar snackbar = Snackbar.make(getWindow().getDecorView().getRootView(), "Отчет сохранен", Snackbar.LENGTH_LONG);
+                    snackbar.setAction("Отправить", new View.OnClickListener (){
+                        @Override
+                        public void onClick(View v) {
+                            shareCSV();
+                        }
+                    });
+                    snackbar.show();
+                }
+            });
         }
 
         private void readArchiveByType(String typeStr, int type) throws ModbusNumberException, ModbusProtocolException, ModbusIOException {

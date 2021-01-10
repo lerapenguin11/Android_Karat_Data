@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -126,17 +127,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Date start = new Date(cYear - 1900, cMonth, cDay);
-                if (mode.equals("TCP")) {
-                    query = new DeviceQuery(
-                            port, ip, adr, start,
-                            getArchivesTypes(), editText_name.getText().toString()
-                    );
-                    if (port == null || ip == null || adr == null)
-                        Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
-                    else if (getArchivesTypes().size() == 0)
-                        Toast.makeText(getApplicationContext(), "Выберите хотя бы один архив", Toast.LENGTH_LONG).show();
-                    else showDialog(1);
-                } else Toast.makeText(getApplicationContext(), "Подключение по USB в разработке", Toast.LENGTH_LONG).show();
+                if (mode != null) {
+                    if (mode.equals("TCP")) {
+                        query = new DeviceQuery(
+                                port, ip, adr, start,
+                                getArchivesTypes(), editText_name.getText().toString()
+                        );
+                        if (port == null || ip == null || adr == null)
+                            Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
+                        else if (getArchivesTypes().size() == 0)
+                            Toast.makeText(getApplicationContext(), "Выберите хотя бы один архив", Toast.LENGTH_LONG).show();
+                        else showDialog(1);
+                    } else
+                        Toast.makeText(getApplicationContext(), "Подключение по USB в разработке", Toast.LENGTH_LONG).show();
+                } else Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -146,10 +150,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                /*Intent intent = new Intent(Intent.ACTION_VIEW);
                 ContextWrapper cw = new ContextWrapper(getApplicationContext());
                 File directory = cw.getExternalFilesDir("Karat");
-                Uri uri = Uri.fromFile(directory);
+                Uri uri = Uri.parse(directory.toString());
+                intent.setDataAndType(uri, "*\/*");
+                startActivity(intent);*/
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
+                        +  "/Android/data/com.example.androidkaratdata/files/Karat/");
+                Log.d("Uri", uri.getPath());
                 intent.setDataAndType(uri, "text/csv");
                 startActivity(Intent.createChooser(intent, "Open folder"));
             }

@@ -1,6 +1,0 @@
-<animation-list
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:oneshot="true">
-    <item android:drawable="@drawable/ic_request" android:duration="250"/>
-    <item android:drawable="@drawable/ic_response" android:duration="250"/>
-</animation-list>
