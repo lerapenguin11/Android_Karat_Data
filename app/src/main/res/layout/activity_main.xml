@@ -89,10 +89,21 @@
                 android:layout_height="49dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/transparent"
                 app:layout_constraintEnd_toEndOf="@+id/include"
                 app:layout_constraintTop_toTopOf="@+id/include"
                 app:srcCompat="@drawable/ic_setting_foreground" />
+
+            <ImageButton
+                android:id="@+id/imageButton_open"
+                android:layout_width="43dp"
+                android:layout_height="49dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="50dp"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toEndOf="@+id/include"
+                app:layout_constraintTop_toTopOf="@+id/include"
+                app:srcCompat="@drawable/ic_baseline_folder_open_24"/>
 
             <CalendarView
                 android:id="@+id/calendarView"

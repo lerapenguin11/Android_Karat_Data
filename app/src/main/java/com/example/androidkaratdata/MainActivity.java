@@ -7,25 +7,29 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.androidkaratdata.queryclass.DeviceQuery;
+import com.example.androidkaratdata.models.DeviceQuery;
 
-import java.lang.reflect.Array;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -39,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
     //DatePicker datePicker;
     CalendarView calendarView;
     TextView textView;
-    ImageButton imageButtonSetting;
+    ImageButton imageButtonSetting, openBtn;
     Button buttonRead;
     DeviceQuery query;
 
     /*String device = {"2-213/223", "306/7/8"};*/
 
-    String port, ip, adr;
+    String port, ip, adr, mode;
     int cYear, cMonth, cDay;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         port = intent.getStringExtra("port");
         ip = intent.getStringExtra("ip");
         adr = intent.getStringExtra("adr");
+        mode = intent.getStringExtra("mode");
 
         if (port != null && ip != null && adr != null)
             Toast.makeText(getApplicationContext(),
@@ -122,10 +127,41 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Date start = new Date(cYear - 1900, cMonth, cDay);
-                query = new DeviceQuery(
-                        port, ip, adr, start,
-                        getArchivesTypes(), editText_name.getText().toString()
-                );
+                if (mode != null) {
+                    if (mode.equals("TCP")) {
+                        query = new DeviceQuery(
+                                port, ip, adr, start,
+                                getArchivesTypes(), editText_name.getText().toString()
+                        );
+                        if (port == null || ip == null || adr == null)
+                            Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
+                        else if (getArchivesTypes().size() == 0)
+                            Toast.makeText(getApplicationContext(), "Выберите хотя бы один архив", Toast.LENGTH_LONG).show();
+                        else showDialog(1);
+                    } else
+                        Toast.makeText(getApplicationContext(), "Подключение по USB в разработке", Toast.LENGTH_LONG).show();
+                } else Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        openBtn = (ImageButton) findViewById(R.id.imageButton_open);
+        openBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                /*Intent intent = new Intent(Intent.ACTION_VIEW);
+                ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                File directory = cw.getExternalFilesDir("Karat");
+                Uri uri = Uri.parse(directory.toString());
+                intent.setDataAndType(uri, "*\/*");
+                startActivity(intent);*/
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
+                        +  "/Android/data/com.example.androidkaratdata/files/Karat/");
+                Log.d("Uri", uri.getPath());
+                intent.setDataAndType(uri, "text/csv");
+                startActivity(Intent.createChooser(intent, "Open folder"));
             }
         });
     }
@@ -177,13 +213,16 @@ public class MainActivity extends AppCompatActivity {
             switch (which) {
                 // положительная кнопка
                 case Dialog.BUTTON_POSITIVE:
-                    Toast.makeText(getApplicationContext(),
-                           "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(),
+                    //       "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
+                    Intent toTerm = new Intent(MainActivity.this, TCPTerminalActivity.class);
+                    toTerm.putExtra("query", query);
+                    startActivity(toTerm);
                     break;
                 // негативная кнопка
                 case Dialog.BUTTON_NEGATIVE:
                     Toast.makeText(getApplicationContext(),
-                            "Исправляй", Toast.LENGTH_LONG).show();
+                            "Исправьте поля", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
