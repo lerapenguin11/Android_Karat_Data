@@ -91,7 +91,7 @@ public class TCPTerminalActivity extends AppCompatActivity {
 
         msgs = new ArrayList<>();
         adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, msgs);
+                R.layout.list_item, msgs);
         listView.setAdapter(adapter);
         start = query.getStart();
         Log.d("Time", start.toString());
