@@ -1,6 +1,7 @@
 package com.example.androidkaratdata;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
@@ -42,6 +43,7 @@ import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.InetAddress;
@@ -171,19 +173,24 @@ public class TCPTerminalActivity extends AppCompatActivity {
                 writeAndShareCSV();
 
             } catch (SerialPortException e) {
+                getMsgToUI("Порт не доступен.");
                 e.printStackTrace();
             } catch (UnknownHostException e) {
+                getMsgToUI("Адрес не доступен.");
                 e.printStackTrace();
             } catch (ModbusIOException e) {
                 getMsgToUI("Прибор не отвечает. Выйдите и попробуйте снова.");
                 e.printStackTrace();
             } catch (IllegalDataValueException e) {
+                getMsgToUI("Введены некорректные.");
                 e.printStackTrace();
             } catch (IllegalDataAddressException e) {
+                getMsgToUI("Адрес не корректен.");
                 e.printStackTrace();
             } catch (ModbusNumberException e) {
                 e.printStackTrace();
             } catch (ModbusProtocolException e) {
+                getMsgToUI("Ошибка протокола.");
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -194,8 +201,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
         private void writeAndShareCSV() throws IOException {
             //creator = new CSVCreator(filesDir, rows);
             String fname = String.valueOf(LocalDateTime.now());
-            File fileDir = filesDir;
-            String pathToExternalStorage = Environment.getExternalStorageDirectory().toString();
+            /*File fileDir = filesDir;
+            //String pathToExternalStorage = Environment.getExternalStorageDirectory().toString();
             //File appDirectory = new File(fileDir + "/" + "Karat");
             // have the object build the directory structure, if needed.
             //appDirectory.mkdirs();
@@ -212,10 +219,22 @@ public class TCPTerminalActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getExternalFilesDir("Karat");
+
+            CSVWriter csvWriter = new CSVWriter(new FileWriter(directory.toString() + fname + ".csv"),
+                    CSVWriter.DEFAULT_SEPARATOR,
+                    CSVWriter.NO_QUOTE_CHARACTER,
+                    CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                    CSVWriter.DEFAULT_LINE_END);
+            for (String[] row: rows)
+                csvWriter.writeNext(row);
+            csvWriter.close();
 
             Context context = getApplicationContext();
-            File filelocation = new File(fileDir + fname + ".csv");
+            File filelocation = new File( directory + fname + ".csv");
             Uri path = FileProvider.getUriForFile(context, "com.example.androidkaratdata.fileprovider", filelocation);
             Intent fileIntent = new Intent(Intent.ACTION_SEND);
             fileIntent.setType("text/csv");
