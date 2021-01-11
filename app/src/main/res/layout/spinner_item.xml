@@ -4,4 +4,6 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/Gainsboro"
-     android:background="@color/colorPrimaryDarker"/>
+     android:padding="10dp"
+     android:background="@color/colorPrimaryDark"
+     />

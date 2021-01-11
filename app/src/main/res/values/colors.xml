@@ -7,4 +7,5 @@
     <color name="colorPrimaryDarker">#444</color>
     <color name="Gainsboro">#DCDCDC</color>
     <color name="transparent">#00DCDCDC</color>
+    <color name="hint">#80F5F5F5</color>
 </resources>

@@ -28,27 +28,30 @@
             <include
                 android:id="@+id/include"
                 layout="@layout/appbar"
-                app:layout_constraintBottom_toTopOf="@+id/editText_name" />
+                app:layout_constraintBottom_toTopOf="@+id/editText_name"
+                android:visibility="invisible"/>
 
 
             <EditText
                 android:id="@+id/editText_name"
                 android:layout_width="0dp"
-                android:layout_height="55dp"
+                android:layout_height="45dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:hint="@string/eText_name_save"
-                android:inputType="textMultiLine"
+                android:inputType="text"
                 android:textColor="@color/color"
-                android:textColorHint="@color/color"
                 android:textSize="20sp"
+                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/include"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                android:background="@color/colorPrimaryDark"
+                android:textColorHint="@color/hint"/>
 
 
             <TextView
@@ -71,7 +74,7 @@
             <Spinner
                 android:id="@+id/spinner_device"
                 android:layout_width="0dp"
-                android:layout_height="42dp"
+                android:layout_height="45dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="15dp"
                 android:entries="@array/spinner_array"
@@ -82,28 +85,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tView_device"
                 app:layout_constraintVertical_bias="0.0" />
-
-            <ImageButton
-                android:id="@+id/imageButton_setting"
-                android:layout_width="43dp"
-                android:layout_height="49dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="10dp"
-                android:background="@color/transparent"
-                app:layout_constraintEnd_toEndOf="@+id/include"
-                app:layout_constraintTop_toTopOf="@+id/include"
-                app:srcCompat="@drawable/ic_setting_foreground" />
-
-            <ImageButton
-                android:id="@+id/imageButton_open"
-                android:layout_width="43dp"
-                android:layout_height="49dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="50dp"
-                android:background="@color/transparent"
-                app:layout_constraintEnd_toEndOf="@+id/include"
-                app:layout_constraintTop_toTopOf="@+id/include"
-                app:srcCompat="@drawable/ic_baseline_folder_open_24"/>
 
             <CalendarView
                 android:id="@+id/calendarView"
@@ -271,4 +252,32 @@
                 app:layout_constraintGuide_begin="196dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <include
+        android:id="@+id/includeVisible"
+        layout="@layout/appbar"
+        />
+
+    <ImageButton
+        android:id="@+id/imageButton_setting"
+        android:layout_width="43dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/includeVisible"
+        app:layout_constraintTop_toTopOf="@+id/includeVisible"
+        app:srcCompat="@drawable/ic_setting_foreground" />
+
+    <ImageButton
+        android:id="@+id/imageButton_open"
+        android:layout_width="43dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="50dp"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/includeVisible"
+        app:layout_constraintTop_toTopOf="@+id/includeVisible"
+        app:srcCompat="@drawable/ic_baseline_folder_open_24"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

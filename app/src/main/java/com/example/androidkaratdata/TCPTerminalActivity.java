@@ -85,6 +85,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tcp_terminal);
 
         query = (DeviceQuery) getIntent().getSerializableExtra("query");
+        if (getIntent().getExtras().containsKey("fname"))
+            fname =  getIntent().getStringExtra("fname");
         new Thread(new Task()).start();
         ListView listView = (ListView) findViewById(R.id.lw);
         NameToCode = new ArchivesRegisters().getNameToCode();
@@ -124,6 +126,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
         private ModbusMaster master;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
         ArchivesConfig cfg;
+        int model;
+        String sn;
         ArrayList<String[]> rows = new ArrayList<>();
 
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -151,8 +155,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
                  - серийник
                  - конфигурация архивов
                  */
-                int model = 0;
-                String sn;
+                model = 0;
+                sn = "";
                 ReadHoldingRegistersResponse getModel = ResponseFromClassicRequest(0x0708, Integer.parseInt("2",16) / 2,"Get Model");
                 ReadHoldingRegistersResponse getDateTime = null;
                 if (getModel != null) {
@@ -221,7 +225,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         private void writeAndShareCSV() throws IOException {
-            fname = String.valueOf(LocalDateTime.now());
+            if (fname == null || fname.equals(""))
+                fname = model + "_" + sn + "_" + String.valueOf(LocalDateTime.now()).replaceAll("[:,]","_");
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             directory = cw.getExternalFilesDir("Karat");
 

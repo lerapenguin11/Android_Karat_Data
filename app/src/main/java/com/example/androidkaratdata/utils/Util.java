@@ -107,6 +107,8 @@ public class Util {
         Log.d("Конфиг V", cfg.getV().toString());
         Log.d("Конфиг T", cfg.getT().toString());
         Log.d("Конфиг P", cfg.getP().toString());
+        Log.d("Конфиг Nar", cfg.getErrors().toString());
+        Log.d("Конфиг Err", cfg.getNarabotki().toString());
         Log.d("Конфиг", "And nothing else matters...");
     }
 }

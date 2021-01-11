@@ -150,18 +150,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                /*Intent intent = new Intent(Intent.ACTION_VIEW);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
                 ContextWrapper cw = new ContextWrapper(getApplicationContext());
                 File directory = cw.getExternalFilesDir("Karat");
                 Uri uri = Uri.parse(directory.toString());
-                intent.setDataAndType(uri, "*\/*");
-                startActivity(intent);*/
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Log.d("Uri", uri.getPath());
+                intent.setDataAndType(uri, "*/*");
+                try {
+                    startActivity(Intent.createChooser(intent, "Выберите менеджер файлов (проводник)"));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    // Potentially direct the user to the Market with a Dialog
+                    Toast.makeText(getApplicationContext(), "Установите один из менеджеров файлов.", Toast.LENGTH_SHORT).show();
+                }
+                /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
                         +  "/Android/data/com.example.androidkaratdata/files/Karat/");
                 Log.d("Uri", uri.getPath());
                 intent.setDataAndType(uri, "text/csv");
-                startActivity(Intent.createChooser(intent, "Open folder"));
+                startActivity(Intent.createChooser(intent, "Open folder"));*/
             }
         });
     }
@@ -217,6 +223,9 @@ public class MainActivity extends AppCompatActivity {
                     //       "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
                     Intent toTerm = new Intent(MainActivity.this, TCPTerminalActivity.class);
                     toTerm.putExtra("query", query);
+                    if (editText_name.getText().toString() != null)
+                        toTerm.putExtra("fname", editText_name.getText().toString()
+                                .replaceAll("[^\\da-zA-Zа-яёА-ЯЁ]", ""));
                     startActivity(toTerm);
                     break;
                 // негативная кнопка
