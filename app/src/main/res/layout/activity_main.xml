@@ -28,7 +28,8 @@
             <include
                 android:id="@+id/include"
                 layout="@layout/appbar"
-                app:layout_constraintBottom_toTopOf="@+id/editText_name" />
+                app:layout_constraintBottom_toTopOf="@+id/editText_name"
+                android:visibility="invisible"/>
 
 
             <EditText
@@ -84,28 +85,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tView_device"
                 app:layout_constraintVertical_bias="0.0" />
-
-            <ImageButton
-                android:id="@+id/imageButton_setting"
-                android:layout_width="43dp"
-                android:layout_height="49dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="10dp"
-                android:background="@color/transparent"
-                app:layout_constraintEnd_toEndOf="@+id/include"
-                app:layout_constraintTop_toTopOf="@+id/include"
-                app:srcCompat="@drawable/ic_setting_foreground" />
-
-            <ImageButton
-                android:id="@+id/imageButton_open"
-                android:layout_width="43dp"
-                android:layout_height="49dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="50dp"
-                android:background="@color/transparent"
-                app:layout_constraintEnd_toEndOf="@+id/include"
-                app:layout_constraintTop_toTopOf="@+id/include"
-                app:srcCompat="@drawable/ic_baseline_folder_open_24"/>
 
             <CalendarView
                 android:id="@+id/calendarView"
@@ -273,4 +252,32 @@
                 app:layout_constraintGuide_begin="196dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <include
+        android:id="@+id/includeVisible"
+        layout="@layout/appbar"
+        />
+
+    <ImageButton
+        android:id="@+id/imageButton_setting"
+        android:layout_width="43dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/includeVisible"
+        app:layout_constraintTop_toTopOf="@+id/includeVisible"
+        app:srcCompat="@drawable/ic_setting_foreground" />
+
+    <ImageButton
+        android:id="@+id/imageButton_open"
+        android:layout_width="43dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="50dp"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/includeVisible"
+        app:layout_constraintTop_toTopOf="@+id/includeVisible"
+        app:srcCompat="@drawable/ic_baseline_folder_open_24"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

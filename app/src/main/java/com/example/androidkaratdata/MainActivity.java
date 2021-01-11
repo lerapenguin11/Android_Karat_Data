@@ -223,6 +223,9 @@ public class MainActivity extends AppCompatActivity {
                     //       "Тут должно начаться чтение", Toast.LENGTH_LONG).show();
                     Intent toTerm = new Intent(MainActivity.this, TCPTerminalActivity.class);
                     toTerm.putExtra("query", query);
+                    if (editText_name.getText().toString() != null)
+                        toTerm.putExtra("fname", editText_name.getText().toString()
+                                .replaceAll("[^\\da-zA-Zа-яёА-ЯЁ]", ""));
                     startActivity(toTerm);
                     break;
                 // негативная кнопка
