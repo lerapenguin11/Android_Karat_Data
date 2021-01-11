@@ -23,18 +23,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        />
 
     <EditText
         android:id="@+id/editText_name"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginStart="14dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:hint="Введите Port"
-        android:inputType="textMultiLine"
-        android:textColorHint="@color/color"
+        android:padding="10dp"
+        android:inputType="number"
+        android:background="@color/colorPrimaryDark"
+        android:textColorHint="@color/hint"
+        android:textColor="@color/color"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,14 +66,17 @@
     <EditText
         android:id="@+id/editText_ID"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginStart="14dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:hint="Введите ID адрес"
-        android:inputType="textMultiLine"
-        android:textColorHint="@color/color"
+        android:inputType="text"
+        android:background="@color/colorPrimaryDark"
+        android:textColorHint="@color/hint"
+        android:textColor="@color/color"
         android:textSize="20sp"
+        android:padding="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,13 +103,16 @@
     <EditText
         android:id="@+id/editText_a"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginStart="14dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
+        android:padding="10dp"
         android:hint="Введите адрес прибора"
-        android:inputType="textMultiLine"
-        android:textColorHint="@color/color"
+        android:inputType="number"
+        android:background="@color/colorPrimaryDark"
+        android:textColorHint="@color/hint"
+        android:textColor="@color/color"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +132,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/include"
         app:layout_constraintTop_toTopOf="@+id/include"
-        app:srcCompat="@drawable/ic_back_button_foreground" />
+        app:srcCompat="@drawable/ic_baseline_save_24" />
 
     <RadioGroup
         android:id="@+id/radios"
@@ -130,7 +140,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_name">
+        app:layout_constraintTop_toBottomOf="@+id/editText_name"
+        android:background="@color/colorPrimaryDark">
 
     </RadioGroup>
 
@@ -193,7 +204,8 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_usb"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

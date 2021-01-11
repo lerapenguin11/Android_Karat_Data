@@ -7,13 +7,13 @@ public class ArchivesConfig {
     private ArrayList<Integer> t  = new ArrayList<>();
     private ArrayList<Integer> p  = new ArrayList<>();
     private ArrayList<Integer> ends = new ArrayList<>();
+    private ArrayList<Integer> errors = new ArrayList<>();
+    private ArrayList<Integer> narabotki = new ArrayList<>();
     private Integer Tmin;
     private Integer Tmax;
     private Integer Tdt;
     private Integer Tf;
     private Integer Tep;
-    private Integer Errors;
-    private Integer Narabotkas;
 
     public ArchivesConfig(String response){
         String[] bytes = response.split(" ");
@@ -28,6 +28,12 @@ public class ArchivesConfig {
                     break;
                 case '4':
                     p.add(Integer.parseInt(aByte, 16));
+                    break;
+                case 'b':
+                    narabotki.add(Integer.parseInt(aByte, 16));
+                    break;
+                case 'c':
+                    errors.add(Integer.parseInt(aByte, 16));
                     break;
                 case 'd':
                     switch (y) {
@@ -44,18 +50,14 @@ public class ArchivesConfig {
                             Tdt = Integer.parseInt(aByte, 16);
                             break;
                         case 3:
+                            y++;
                             Tf = Integer.parseInt(aByte, 16);
                             break;
                         case 4:
+                            y++;
                             Tep = Integer.parseInt(aByte, 16);
                             break;
                     }
-                case 'c':
-                    Errors = Integer.parseInt(aByte, 16);
-                    break;
-                case 'b':
-                    Narabotkas = Integer.parseInt(aByte, 16);
-                    break;
                 default:
                     ends.add(Integer.parseInt(aByte, 16));
                     break;
@@ -120,20 +122,11 @@ public class ArchivesConfig {
         Tf = tf;
     }
 
-    public Integer getErrors() {
-        return Errors;
+    public ArrayList<Integer> getErrors(){
+        return errors;
     }
-
-    public void setErrors(Integer errors) {
-        Errors = errors;
-    }
-
-    public Integer getNarabotkas() {
-        return Narabotkas;
-    }
-
-    public void setNarabotkas(Integer narabotkas) {
-        Narabotkas = narabotkas;
+    public ArrayList<Integer> getNarabotki(){
+        return narabotki;
     }
 
     public String[] getTitles(){
@@ -150,8 +143,10 @@ public class ArchivesConfig {
         res.add("Tdt");
         res.add("Tf");
         res.add("Tep");
-        res.add("Ошибки");
-        res.add("Наработки");
+        for (int i = 1; i <= narabotki.size(); i++)
+            res.add("Наработка "+i);
+        for (int i = 1; i <= errors.size(); i++)
+            res.add("Ошибка "+i);
         return res.toArray(new String[0]);
     }
 

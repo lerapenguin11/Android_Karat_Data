@@ -221,7 +221,7 @@ public class TCPTerminalActivity extends AppCompatActivity {
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         private void writeAndShareCSV() throws IOException {
-            fname = String.valueOf(LocalDateTime.now());
+            fname = String.valueOf(LocalDateTime.now()).replaceAll("[:,]","_");
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             directory = cw.getExternalFilesDir("Karat");
 

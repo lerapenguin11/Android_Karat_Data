@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.apache.commons.math3.util.Precision;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +17,12 @@ public class RecordRow {
     private ArrayList<Float> tf = new ArrayList<>();
     private ArrayList<ArrayList<String>> p  = new ArrayList<>();
     private ArrayList<Float> pf = new ArrayList<>();
+    private ArrayList<ArrayList<String>> erS  = new ArrayList<>();
+    private ArrayList<BigInteger> erL = new ArrayList<>();
+    private ArrayList<ArrayList<String>> narS  = new ArrayList<>();
+    private ArrayList<BigInteger> narL = new ArrayList<>();
     private HashMap<String, ArrayList<String>> otherFields = new HashMap<>();
-    private HashMap<String, Float> otherFieldsFloat = new HashMap<>();
+    private HashMap<String, BigInteger> otherFieldsFloat = new HashMap<>();
     private ArchivesConfig cfg;
 
     public RecordRow(ArchivesConfig cfg, String response){
@@ -66,13 +71,18 @@ public class RecordRow {
         for (int y = 0; y < 4; y++)
             otherFields.get("Tep").add(responseArray[++i]);
 
-        otherFields.put("Errors", new ArrayList<String>());
-        for (int y = 0; y < 4; y++)
-            otherFields.get("Errors").add(responseArray[++i]);
+        for (int z = 0; z < cfg.getNarabotki().size(); z++){
+            narS.add(new ArrayList<String>());
+            for (int y = 0; y < 4; y++)
+                narS.get(z).add(responseArray[i+z*4+y]);
+        }
+        i += cfg.getNarabotki().size() * 4;
 
-        otherFields.put("Narabotkas", new ArrayList<String>());
-        for (int y = 0; y < 4; y++)
-            otherFields.get("Narabotkas").add(responseArray[++i]);
+        for (int z = 0; z < cfg.getErrors().size(); z++){
+            erS.add(new ArrayList<String>());
+            for (int y = 0; y < 4; y++)
+                erS.get(z).add(responseArray[i+z*8+y]);
+        }
 
         for (ArrayList<String> four: v)
             vf.add(FourByteStringToFloat(four));
@@ -83,10 +93,15 @@ public class RecordRow {
         for (ArrayList<String> four: p)
             pf.add(FourByteStringToFloat(four));
 
-        for (Map.Entry<String, ArrayList<String>> pair: otherFields.entrySet())
-            otherFieldsFloat.put(pair.getKey(), FourByteStringToFloat(pair.getValue()));
-    }
+        for (ArrayList<String> eigth: erS)
+            erL.add(FourByteStringToBI(eigth));
 
+        for (ArrayList<String> eigth: narS)
+            narL.add(FourByteStringToBI(eigth));
+
+        for (Map.Entry<String, ArrayList<String>> pair: otherFields.entrySet())
+            otherFieldsFloat.put(pair.getKey(), FourByteStringToBI(pair.getValue()));
+    }
 
     public ArrayList<Float> getVf() {
         return vf;
@@ -102,6 +117,16 @@ public class RecordRow {
         return f;
     }
 
+    private BigInteger FourByteStringToBI(ArrayList<String> eigth){
+        String reverse =  eigth.get(3) +
+                eigth.get(2) +
+                eigth.get(1) +
+                eigth.get(0);
+        BigInteger bi = new BigInteger(reverse, 16);
+        Log.d("Data BI", eigth.toString() + " ---> " + bi.toString());
+        return bi.divide(BigInteger.valueOf(60));
+    }
+
     public ArrayList<Float> getTf() {
         return tf;
     }
@@ -110,8 +135,15 @@ public class RecordRow {
         return pf;
     }
 
+    public ArrayList<BigInteger> getErL() {
+        return erL;
+    }
 
-    public HashMap<String, Float> getOtherFieldsFloat() {
+    public ArrayList<BigInteger> getNarL() {
+        return narL;
+    }
+
+    public HashMap<String, BigInteger> getOtherFieldsFloat() {
         return otherFieldsFloat;
     }
 
@@ -124,6 +156,7 @@ public class RecordRow {
     }
 
     public String[] getRowArray(RecordRow r){
+        Log.d("Row Array", r.otherFieldsFloat.toString());
         ArrayList<String> res = new ArrayList<>();
         res.add(r.day + "." +  r.month + "." + r.year);
         for (Float f: r.getVf())
@@ -132,8 +165,15 @@ public class RecordRow {
             res.add(f.toString());
         for (Float f: r.getPf())
             res.add(f.toString());
-        for (Float f: r.getOtherFieldsFloat().values())
-            res.add(f.toString());
+        for (Map.Entry<String, BigInteger> f: r.getOtherFieldsFloat().entrySet()) {
+            res.add(f.getValue().toString());
+        }
+        for (BigInteger e: r.getErL())
+            if (e.equals(BigInteger.valueOf(0)))
+                res.add("Ok");
+            else res.add(e.toString());
+        for (BigInteger e: r.getNarL())
+            res.add(e.toString());
         return res.toArray(new String[0]);
     }
 }
