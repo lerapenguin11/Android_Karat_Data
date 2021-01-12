@@ -58,7 +58,7 @@ public class NewRecordRow {
         String reverse =  four.get(3) + four.get(2) + four.get(1) + four.get(0);
         BigInteger bi = new BigInteger(reverse, 16);
         Log.d("Data Long", four.toString() + " ---> " + bi.toString());
-        return bi.divide(BigInteger.valueOf(60));
+        return bi;
     }
 
     public String[] getRowArray(){

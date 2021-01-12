@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include"
-        />
+        android:transcriptMode="alwaysScroll"/>
 
     <ImageView
         android:id="@+id/image_load"

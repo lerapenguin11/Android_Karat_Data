@@ -293,8 +293,8 @@ public class TCPTerminalActivity extends AppCompatActivity {
             byte day = Byte.parseByte(Integer.toHexString(start.getDate()), 16);
             Log.d("date", String.valueOf(start.getMonth() + 1));
             byte month = Byte.parseByte(Integer.toHexString(start.getMonth() + 1), 16);
-            Log.d("date", String.valueOf(start.getYear()));
-            byte year = Byte.parseByte(Integer.toHexString(start.getYear()), 16);
+            Log.d("date", String.valueOf(start.getYear() -100));
+            byte year = Byte.parseByte(Integer.toHexString(start.getYear() - 100), 16);
             test.setBytes(new byte[]{0x00, day, month, year});
             master.processRequest(test);
             response = (WriteMultipleRegistersResponse) test.getResponse();

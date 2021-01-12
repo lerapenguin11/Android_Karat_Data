@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     String port, ip, adr, mode;
     int cYear, cMonth, cDay;
+    Date start = new Date();
+    int dialogCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         ip = intent.getStringExtra("ip");
         adr = intent.getStringExtra("adr");
         mode = intent.getStringExtra("mode");
+
+        dialogCounter = 0;
 
         if (port != null && ip != null && adr != null)
             Toast.makeText(getApplicationContext(),
@@ -94,15 +98,16 @@ public class MainActivity extends AppCompatActivity {
         spinnerDevice.setAdapter(adapter);
 
         calendarView = findViewById(R.id.calendarView);
+        start.setTime(calendarView.getDate());
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year,
                                             int month, int dayOfMonth) {
-                cYear = year;
+                cYear = year + 100;
                 cMonth = month;
                 cDay = dayOfMonth;
                 String selectedDate = new StringBuilder().append(cMonth + 1)
-                        .append("-").append(cDay).append("-").append(cYear)
+                        .append("-").append(cDay).append("-").append(cYear - 100)
                         .append(" ").toString();
                 //Toast.makeText(getApplicationContext(), selectedDate, Toast.LENGTH_LONG).show();
                 textView.setText("Начать с " + selectedDate);
@@ -125,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
         buttonRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date start = new Date(cYear - 2000, cMonth, cDay);
+                if (cDay != 0)
+                    start = new Date(cYear - 2000, cMonth, cDay);
                 if (mode != null) {
                     if (mode.equals("TCP")) {
                         query = new DeviceQuery(
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
                         else if (getArchivesTypes().size() == 0)
                             Toast.makeText(getApplicationContext(), "Выберите хотя бы один архив", Toast.LENGTH_LONG).show();
-                        else showDialog(1);
+                        else showDialog(dialogCounter++);
                     } else
                         Toast.makeText(getApplicationContext(), "Подключение по USB в разработке", Toast.LENGTH_LONG).show();
                 } else Toast.makeText(getApplicationContext(), "Определите параметры соединения в настройках (⚙)", Toast.LENGTH_LONG).show();
