@@ -8,12 +8,12 @@ public class ArchivesRegisters {
     public ArchivesRegisters(){
         NameToCode = new HashMap<>();
         NameToCode.put("Почасовой", 0x00);
-        NameToCode.put("Посуточный", 0x01);
-        NameToCode.put("Помесячный", 0x02);
-        NameToCode.put("Интегральный", 0x03);
-        NameToCode.put("Аварийный", 0x04);
-        NameToCode.put("Событий", 0x05);
-        NameToCode.put("Защитный", 0x07);
+        NameToCode.put("Посуточный", 0x10);
+        NameToCode.put("Помесячный", 0x20);
+        NameToCode.put("Интегральный", 0x30);
+        NameToCode.put("Аварийный", 0x40);
+        NameToCode.put("Событий", 0x50);
+        NameToCode.put("Защитный", 0x70);
     }
 
     public HashMap<String, Integer> getNameToCode(){

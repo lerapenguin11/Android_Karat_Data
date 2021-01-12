@@ -107,7 +107,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void enableUSB() {
-        radioTCP.setChecked(true);
+        radioUSB.setChecked(true);
         usb_text.setVisibility(View.VISIBLE);
         spinner_usb.setVisibility(View.VISIBLE);
         ip_text.setVisibility(View.GONE);
@@ -117,7 +117,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void enableTCP() {
-        radioUSB.setChecked(true);
+        radioTCP.setChecked(true);
         ip_text.setVisibility(View.VISIBLE);
         ip.setVisibility(View.VISIBLE);
         usb_text.setVisibility(View.GONE);

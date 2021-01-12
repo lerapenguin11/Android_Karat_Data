@@ -57,7 +57,7 @@ public class DeviceQuery implements Serializable {
             sb.append("\n");
         }
         return adr + sb.toString() +
-                "Date: " + start.toString() + "\n" +
+                "Date: " + start.getDate() + "." + (start.getMonth() + 1) + "." + (start.getYear() + 1900) + "\n" +
                 "File: " + resName;
 
     }
