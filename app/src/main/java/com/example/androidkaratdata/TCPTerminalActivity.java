@@ -21,6 +21,8 @@ import androidx.core.content.FileProvider;
 
 import com.example.androidkaratdata.models.ArchivesConfig;
 import com.example.androidkaratdata.models.DeviceQuery;
+import com.example.androidkaratdata.models.NewArchivesCfg;
+import com.example.androidkaratdata.models.NewRecordRow;
 import com.example.androidkaratdata.models.RecordRow;
 import com.example.androidkaratdata.utils.ArchivesRegisters;
 import com.example.androidkaratdata.utils.CSVCreator;
@@ -45,6 +47,8 @@ import com.intelligt.modbus.jlibmodbus.serial.SerialUtils;
 import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
 import com.opencsv.CSVWriter;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -63,6 +67,7 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 
 import static com.example.androidkaratdata.utils.Util.getHexContent;
+import static com.example.androidkaratdata.utils.Util.getHexReq;
 import static com.example.androidkaratdata.utils.Util.printArchivesCfg;
 import static com.example.androidkaratdata.utils.Util.printDateTime;
 import static com.example.androidkaratdata.utils.Util.printModel;
@@ -125,7 +130,7 @@ public class TCPTerminalActivity extends AppCompatActivity {
     public class Task extends Thread{
         private ModbusMaster master;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
-        ArchivesConfig cfg;
+        NewArchivesCfg cfg;
         int model;
         String sn;
         ArrayList<String[]> rows = new ArrayList<>();
@@ -184,8 +189,9 @@ public class TCPTerminalActivity extends AppCompatActivity {
                 WriteMultipleRegistersResponse dateTime10Response = null;
                 if (getArchivesCfg != null){
                     String cfgStr = getHexContent(getArchivesCfg);
-                    cfg = new ArchivesConfig(cfgStr);
-                    printArchivesCfg(cfg);
+                    cfg = new NewArchivesCfg(cfgStr);
+                    //printArchivesCfg(cfg);
+                    Log.d("CFG", cfg.getTitles().toString());
                     dateTime10Response = Response10DateTime(start);
                 }
 
@@ -259,19 +265,19 @@ public class TCPTerminalActivity extends AppCompatActivity {
         private void readArchiveByType(String typeStr, int type) throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
             getMsgToUI("Чтение архива: " + typeStr);
             int c = 0;
-            int next = type + 5;
+            int next = type + 0x05;
             rows.add(new String[]{typeStr +" архив"});
-            rows.add(cfg.getTitles());
+            rows.add(ArrayUtils.addAll(new String[]{"Дата"}, cfg.getTitles().toArray(new String[0])));
             while (true){
-                int offset = c > 0 ? type : next;
+                int offset = c > 0 ? next : type;
                 ReadHoldingRegistersResponse row = ResponseFromClassicRequest(offset, Integer.parseInt("F0",16) / 2, "Get " + typeStr);
                 if ((String.valueOf(getHexContent(row).charAt(0)) + getHexContent(row).charAt(1)).equals("ff")) {
                     break;
                 } else {
-                    RecordRow recordRow = new RecordRow(cfg, getHexContent(row));
+                    NewRecordRow recordRow = new NewRecordRow(cfg, getHexContent(row));
                     //creator.printRow(recordRow.getRowArray(recordRow));
-                    rows.add(recordRow.getRowArray(recordRow));
-                    getMsgToUI(Arrays.asList(recordRow.getRowArray(recordRow)).toString());
+                    rows.add(recordRow.getRowArray());
+                    getMsgToUI(Arrays.asList(recordRow.getRowArray()).toString());
                     c++;
                 }
             }
@@ -316,10 +322,10 @@ public class TCPTerminalActivity extends AppCompatActivity {
             readRequest.setServerAddress(slaveId);
             readRequest.setStartAddress(offset);
             readRequest.setQuantity(quantity);
-
+            getMsgToUI(getHexReq(readRequest));
             master.processRequest(readRequest);
             response = (ReadHoldingRegistersResponse) readRequest.getResponse();
-
+            getMsgToUI(getHexContent(response));
             Log.d("hex data", getHexContent(response));
             return response;
         }

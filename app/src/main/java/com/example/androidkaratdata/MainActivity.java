@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     String port, ip, adr, mode;
     int cYear, cMonth, cDay;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         buttonRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date start = new Date(cYear - 1900, cMonth, cDay);
+                Date start = new Date(cYear - 2000, cMonth, cDay);
                 if (mode != null) {
                     if (mode.equals("TCP")) {
                         query = new DeviceQuery(

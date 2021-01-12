@@ -3,6 +3,7 @@ package com.example.androidkaratdata.utils;
 import android.util.Log;
 
 import com.example.androidkaratdata.models.ArchivesConfig;
+import com.intelligt.modbus.jlibmodbus.msg.request.ReadHoldingRegistersRequest;
 import com.intelligt.modbus.jlibmodbus.msg.response.ReadHoldingRegistersResponse;
 
 import java.text.SimpleDateFormat;
@@ -110,5 +111,12 @@ public class Util {
         Log.d("Конфиг Nar", cfg.getErrors().toString());
         Log.d("Конфиг Err", cfg.getNarabotki().toString());
         Log.d("Конфиг", "And nothing else matters...");
+    }
+
+    public static String getHexReq(ReadHoldingRegistersRequest req){
+        return "---->" + Integer.toHexString(req.getServerAddress()) + " " +
+                Integer.toHexString(req.getFunction()) + " " +
+                Integer.toHexString(req.getStartAddress()) + " " +
+                Integer.toHexString(req.getQuantity());
     }
 }
